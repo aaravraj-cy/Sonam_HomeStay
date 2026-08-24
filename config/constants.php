@@ -52,7 +52,16 @@ function env_value($key, $default = '')
 
 function base_url_from_env()
 {
-    $baseUrl = env_value('BASE_URL', 'http://localhost/Sonam_HomeStay/');
+    $baseUrl = env_value('BASE_URL', '');
+    if ($baseUrl === '') {
+        $railwayDomain = env_value('RAILWAY_PUBLIC_DOMAIN', '');
+        if ($railwayDomain !== '') {
+            $baseUrl = 'https://' . preg_replace('#^https?://#', '', $railwayDomain);
+        }
+    }
+    if ($baseUrl === '') {
+        $baseUrl = 'http://localhost/Sonam_HomeStay/';
+    }
     return rtrim($baseUrl, '/') . '/';
 }
 
@@ -86,7 +95,8 @@ function db_ssl_ca_path()
 
     if (DB_SSL_CA_CONTENT !== '') {
         $resolvedPath = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'sonam-aiven-ca.pem';
-        file_put_contents($resolvedPath, DB_SSL_CA_CONTENT);
+        $caContent = str_replace("\\n", "\n", DB_SSL_CA_CONTENT);
+        file_put_contents($resolvedPath, $caContent);
         @chmod($resolvedPath, 0600);
         return $resolvedPath;
     }
