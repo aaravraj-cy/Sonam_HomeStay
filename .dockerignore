@@ -1,0 +1,14 @@
+.git
+.DS_Store
+**/.DS_Store
+.env
+.env.*
+!.env.example
+private/certs/*
+!private/certs/README.md
+HomeStay*.zip
+project_documentation.html
+project_documentation.md
+project_report.html
+project_report_expanded.html
+srs.html

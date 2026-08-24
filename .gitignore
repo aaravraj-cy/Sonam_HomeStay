@@ -3,3 +3,10 @@
 /project_report.html
 /project_report_expanded.html
 /srs.html
+.DS_Store
+*.zip
+.env
+.env.*
+!.env.example
+/private/certs/*
+!/private/certs/README.md
