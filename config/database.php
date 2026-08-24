@@ -44,6 +44,14 @@ try {
         // Silently skip if database tables aren't installed yet
     }
 } catch (PDOException $e) {
+    error_log('[Sonam DB] Connection failed: host=' . DB_HOST
+        . ' port=' . DB_PORT
+        . ' db=' . DB_NAME
+        . ' user=' . DB_USER
+        . ' ssl=' . (db_ssl_ca_path() !== '' ? 'configured' : 'not-configured')
+        . ' code=' . $e->getCode()
+        . ' message=' . $e->getMessage());
+
     $install = BASE_URL . 'database/install.php';
     $isLocalDatabase = in_array(strtolower(DB_HOST), ['localhost', '127.0.0.1', '::1'], true);
     $actionHtml = $isLocalDatabase
