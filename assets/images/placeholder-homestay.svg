@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#134e4a"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect fill="url(#g)" width="800" height="600"/>
+  <rect x="280" y="220" width="240" height="180" rx="16" fill="rgba(255,255,255,0.15)"/>
+  <polygon points="280,220 400,140 520,220" fill="rgba(255,255,255,0.25)"/>
+  <text x="400" y="460" text-anchor="middle" fill="#f0ebe3" font-family="Georgia,serif" font-size="28">Sonam Homestay</text>
+</svg>

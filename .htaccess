@@ -1,0 +1,12 @@
+# Sonam Homestay — Apache config (optional)
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Block direct access to sensitive folders if needed
+</IfModule>
+
+# Protect config from direct access when placed wrong
+<FilesMatch "^(database\.php|session\.php|constants\.php)$">
+    # Only apply if these somehow end up in web root
+</FilesMatch>
