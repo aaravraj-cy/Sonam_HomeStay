@@ -20,14 +20,14 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
-    $title = trim($_POST['title'] ?? '');
-    $desc = trim($_POST['description'] ?? '');
-    $type = trim($_POST['property_type'] ?? 'Homestay');
-    $address = trim($_POST['address'] ?? '');
-    $city = trim($_POST['city'] ?? '');
-    $state = trim($_POST['state'] ?? '');
-    $pincode = trim($_POST['pincode'] ?? '');
-    $rules = trim($_POST['house_rules'] ?? '');
+    $title = input_string($_POST['title'] ?? '', 200);
+    $desc = input_string($_POST['description'] ?? '', 5000);
+    $type = input_string($_POST['property_type'] ?? 'Homestay', 50);
+    $address = input_string($_POST['address'] ?? '', 500);
+    $city = input_string($_POST['city'] ?? '', 100);
+    $state = input_string($_POST['state'] ?? '', 100);
+    $pincode = input_string($_POST['pincode'] ?? '', 20);
+    $rules = input_string($_POST['house_rules'] ?? '', 1000);
     $isActive = isset($_POST['is_active']) ? 1 : 0;
     $amenityIds = array_map('intval', $_POST['amenities'] ?? []);
     $cover = $h['cover_image'];
@@ -37,8 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($up) $cover = $up;
     }
 
-    if (strlen($title) < 5) {
-        $error = 'Title too short.';
+    if (!in_array($type, ['Homestay', 'Cottage', 'Villa', 'Apartment'], true)) {
+        $type = 'Homestay';
+    }
+
+    if (strlen($title) < 5 || strlen($desc) < 20 || $address === '' || $city === '' || $state === '') {
+        $error = 'Title, description, address, city and state are required.';
+    } elseif ($pincode !== '' && !preg_match('/^[0-9A-Za-z -]{3,20}$/', $pincode)) {
+        $error = 'Enter a valid pincode.';
     } else {
         $conn->prepare('UPDATE homestays SET title=?, description=?, property_type=?, address=?, city=?, state=?, pincode=?, cover_image=?, house_rules=?, is_active=? WHERE id=? AND owner_id=?')
             ->execute([$title, $desc, $type, $address, $city, $state, $pincode ?: null, $cover, $rules ?: null, $isActive, $id, $ownerId]);

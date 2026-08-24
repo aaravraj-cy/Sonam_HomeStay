@@ -36,15 +36,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'add' || $action === 'edit') {
-        $name = trim($_POST['name'] ?? '');
-        $type = trim($_POST['room_type'] ?? 'Private Room');
+        $name = input_string($_POST['name'] ?? '', 120);
+        $type = input_string($_POST['room_type'] ?? 'Private Room', 50);
+        if (!in_array($type, ['Private Room', 'Double Room', 'Family Room', 'Single Room', 'Suite'], true)) {
+            $type = 'Private Room';
+        }
         $maxG = min(4, max(1, (int)($_POST['max_guests'] ?? 2)));
         $beds = max(1, (int)($_POST['beds'] ?? 1));
         $price = (float)($_POST['price_per_night'] ?? 0);
         $cleaning = 0.0;
-        $desc = trim($_POST['description'] ?? '');
+        $desc = input_string($_POST['description'] ?? '', 1000);
 
-        if ($name == '' || $price <= 0) {
+        if (!valid_name($name, 2, 120) || !valid_money($price)) {
             $error = 'Room name and price per night are required.';
         } elseif ($action === 'add') {
             $conn->prepare('INSERT INTO rooms (homestay_id, name, description, room_type, max_guests, beds, price_per_night, cleaning_fee) VALUES (?,?,?,?,?,?,?,?)')
@@ -75,9 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect(BASE_URL . 'owner/manage-rooms.php?homestay_id=' . $hid);
         } else {
             $rid = (int)($_POST['room_id'] ?? 0);
-            $conn->prepare('UPDATE rooms SET name=?, description=?, room_type=?, max_guests=?, beds=?, price_per_night=?, cleaning_fee=? WHERE id=? AND homestay_id=?')
-                ->execute([$name, $desc ?: null, $type, $maxG, $beds, $price, $cleaning, $rid, $hid]);
-            set_flash('success', 'Room updated successfully.');
+            $updated = $conn->prepare('UPDATE rooms SET name=?, description=?, room_type=?, max_guests=?, beds=?, price_per_night=?, cleaning_fee=? WHERE id=? AND homestay_id=?');
+            $updated->execute([$name, $desc ?: null, $type, $maxG, $beds, $price, $cleaning, $rid, $hid]);
+            set_flash($updated->rowCount() > 0 ? 'success' : 'error', $updated->rowCount() > 0 ? 'Room updated successfully.' : 'Room not found.');
             redirect(BASE_URL . 'owner/manage-rooms.php?homestay_id=' . $hid);
         }
     }
@@ -89,16 +92,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ((int)$active->fetchColumn() > 0) {
             set_flash('error', 'Cannot delete room: active bookings exist.');
         } else {
-            $conn->prepare('DELETE FROM rooms WHERE id=? AND homestay_id=?')->execute([$rid, $hid]);
-            set_flash('success', 'Room deleted successfully.');
+            $deleted = $conn->prepare('DELETE FROM rooms WHERE id=? AND homestay_id=?');
+            $deleted->execute([$rid, $hid]);
+            set_flash($deleted->rowCount() > 0 ? 'success' : 'error', $deleted->rowCount() > 0 ? 'Room deleted successfully.' : 'Room not found.');
         }
         redirect(BASE_URL . 'owner/manage-rooms.php?homestay_id=' . $hid);
     }
 
     if ($action === 'toggle') {
         $rid = (int)($_POST['room_id'] ?? 0);
-        $conn->prepare('UPDATE rooms SET is_active=IF(is_active=1,0,1) WHERE id=? AND homestay_id=?')->execute([$rid, $hid]);
-        set_flash('success', 'Room status toggled.');
+        $toggled = $conn->prepare('UPDATE rooms SET is_active=IF(is_active=1,0,1) WHERE id=? AND homestay_id=?');
+        $toggled->execute([$rid, $hid]);
+        set_flash($toggled->rowCount() > 0 ? 'success' : 'error', $toggled->rowCount() > 0 ? 'Room status toggled.' : 'Room not found.');
         redirect(BASE_URL . 'owner/manage-rooms.php?homestay_id=' . $hid);
     }
 }

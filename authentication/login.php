@@ -41,12 +41,22 @@ $email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
-    $email = trim($_POST['email'] ?? '');
+    if (!rate_limit('login', 8, 300)) {
+        $error = 'Too many login attempts. Please wait a few minutes and try again.';
+    }
+    $email = input_string($_POST['email'] ?? '', 150);
     $password = $_POST['password'] ?? '';
     $role = $_POST['role'] ?? 'user';
+    if (!in_array($role, ['user', 'owner'], true)) {
+        $role = 'user';
+    }
 
-    if ($email == '' || $password == '') {
+    if ($error !== '') {
+        // Rate limit message already set.
+    } elseif ($email == '' || $password == '') {
         $error = 'Email and password are required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'Enter a valid email address.';
     } else {
         $stmt = $conn->prepare('SELECT * FROM users WHERE email = ? AND role = ?');
         $stmt->execute([$email, $role]);

@@ -20,26 +20,26 @@ $business_name = 'Sonam HomeStay';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
 
-    $name = trim($_POST['full_name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
+    $name = input_string($_POST['full_name'] ?? '', 120);
+    $email = input_string($_POST['email'] ?? '', 150);
+    $phone = input_string($_POST['phone'] ?? '', 20);
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['password_confirm'] ?? '';
     $role = trim($_POST['role'] ?? 'user');
     if (!in_array($role, ['user', 'owner'], true)) {
         $role = 'user';
     }
-    $business_name = trim($_POST['business_name'] ?? 'Sonam HomeStay') ?: 'Sonam HomeStay';
+    $business_name = input_string($_POST['business_name'] ?? 'Sonam HomeStay', 150) ?: 'Sonam HomeStay';
 
     // Form validations
-    if (strlen($name) < 2) {
+    if (!valid_name($name)) {
         $error = 'Please enter your full name.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Please enter a valid email address.';
-    } elseif (empty($phone)) {
-        $error = 'Please enter your phone number.';
-    } elseif (strlen($password) < 6) {
-        $error = 'Password must be at least 6 characters.';
+    } elseif ($phone === '' || !valid_phone($phone)) {
+        $error = 'Please enter a valid phone number.';
+    } elseif (!valid_password($password)) {
+        $error = 'Password must be at least 8 characters.';
     } elseif ($password !== $confirm) {
         $error = 'Passwords do not match.';
     } elseif ($role === 'owner' && defined('MAX_OWNERS') && MAX_OWNERS >= 0 && owner_count() >= MAX_OWNERS) {

@@ -19,38 +19,41 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    // Self-healing database updates
-    try {
-        $check = $conn->query("SHOW COLUMNS FROM room_images LIKE 'sort_order'")->fetch();
-        if (!$check) {
-            $conn->exec("ALTER TABLE room_images ADD COLUMN sort_order INT NOT NULL DEFAULT 0");
-        }
+    if (DB_AUTO_MIGRATE) {
+        // Optional compatibility updates. Keep disabled during normal production requests.
+        try {
+            $check = $conn->query("SHOW COLUMNS FROM room_images LIKE 'sort_order'")->fetch();
+            if (!$check) {
+                $conn->exec("ALTER TABLE room_images ADD COLUMN sort_order INT NOT NULL DEFAULT 0");
+            }
 
-        // Self-healing check for gallery_images table
-        $tableCheck = $conn->query("SHOW TABLES LIKE 'gallery_images'")->fetch();
-        if (!$tableCheck) {
-            $conn->exec("CREATE TABLE gallery_images (
-                id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                owner_id INT UNSIGNED NOT NULL,
-                image_path VARCHAR(255) NOT NULL,
-                title VARCHAR(150) DEFAULT NULL,
-                city VARCHAR(100) DEFAULT NULL,
-                sort_order INT NOT NULL DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (owner_id) REFERENCES owners(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB");
+            $tableCheck = $conn->query("SHOW TABLES LIKE 'gallery_images'")->fetch();
+            if (!$tableCheck) {
+                $conn->exec("CREATE TABLE gallery_images (
+                    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                    owner_id INT UNSIGNED NOT NULL,
+                    image_path VARCHAR(255) NOT NULL,
+                    title VARCHAR(150) DEFAULT NULL,
+                    city VARCHAR(100) DEFAULT NULL,
+                    sort_order INT NOT NULL DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (owner_id) REFERENCES owners(id) ON DELETE CASCADE
+                ) ENGINE=InnoDB");
+            }
+        } catch (PDOException $ex) {
+            // Skip when tables are not installed yet.
         }
-    } catch (PDOException $ex) {
-        // Silently skip if database tables aren't installed yet
     }
 } catch (PDOException $e) {
-    error_log('[Sonam DB] Connection failed: host=' . DB_HOST
-        . ' port=' . DB_PORT
-        . ' db=' . DB_NAME
-        . ' user=' . DB_USER
-        . ' ssl=' . (db_ssl_ca_path() !== '' ? 'configured' : 'not-configured')
-        . ' code=' . $e->getCode()
-        . ' message=' . $e->getMessage());
+    if (DB_DEBUG) {
+        error_log('[Sonam DB] Connection failed: host=' . DB_HOST
+            . ' port=' . DB_PORT
+            . ' db=' . DB_NAME
+            . ' user=' . DB_USER
+            . ' ssl=' . (db_ssl_ca_path() !== '' ? 'configured' : 'not-configured')
+            . ' code=' . $e->getCode()
+            . ' message=' . $e->getMessage());
+    }
 
     $install = BASE_URL . 'database/install.php';
     $isLocalDatabase = in_array(strtolower(DB_HOST), ['localhost', '127.0.0.1', '::1'], true);

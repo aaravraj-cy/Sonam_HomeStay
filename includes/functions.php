@@ -14,6 +14,57 @@ function redirect($url)
     exit;
 }
 
+function input_string($value, $maxLength = 255)
+{
+    $value = trim(str_replace("\0", '', (string)$value));
+    $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $value);
+    if ($value === null) {
+        return '';
+    }
+    if (function_exists('mb_substr')) {
+        return mb_substr($value, 0, $maxLength, 'UTF-8');
+    }
+    return substr($value, 0, $maxLength);
+}
+
+function valid_name($value, $min = 2, $max = 120)
+{
+    $len = strlen(trim((string)$value));
+    return $len >= $min && $len <= $max;
+}
+
+function valid_phone($value)
+{
+    $value = trim((string)$value);
+    return $value === '' || (strlen($value) <= 20 && preg_match('/^\+?[0-9][0-9\s().-]{6,19}$/', $value));
+}
+
+function valid_password($value)
+{
+    return strlen((string)$value) >= 8;
+}
+
+function valid_money($value, $min = 0.01, $max = 100000)
+{
+    return is_numeric($value) && (float)$value >= $min && (float)$value <= $max;
+}
+
+function rate_limit($key, $maxAttempts, $seconds)
+{
+    $now = time();
+    $bucketKey = 'rate_' . preg_replace('/[^a-z0-9_.-]/i', '_', $key);
+    $bucket = $_SESSION[$bucketKey] ?? ['count' => 0, 'reset' => $now + $seconds];
+
+    if (($bucket['reset'] ?? 0) <= $now) {
+        $bucket = ['count' => 0, 'reset' => $now + $seconds];
+    }
+
+    $bucket['count']++;
+    $_SESSION[$bucketKey] = $bucket;
+
+    return $bucket['count'] <= $maxAttempts;
+}
+
 function login_url($redirectTo = '')
 {
     $url = BASE_URL . 'authentication/login.php';
@@ -464,10 +515,10 @@ function first_name($fullName)
 // Simple image upload
 function upload_image($file, $folder)
 {
-    if ($file['error'] !== UPLOAD_ERR_OK) {
+    if (!isset($file['error'], $file['size'], $file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
         return false;
     }
-    if ($file['size'] > 5 * 1024 * 1024) {
+    if ($file['size'] <= 0 || $file['size'] > 5 * 1024 * 1024) {
         return false;
     }
 
@@ -482,24 +533,49 @@ function upload_image($file, $folder)
         'image/gif' => 'gif',
     ];
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    if (!$finfo) {
+        return false;
+    }
     $mime = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
 
-    if (!isset($allowed[$mime]) || @getimagesize($file['tmp_name']) === false) {
+    $dimensions = @getimagesize($file['tmp_name']);
+    if (!isset($allowed[$mime]) || $dimensions === false || $dimensions[0] > 8000 || $dimensions[1] > 8000) {
         return false;
     }
 
-    if (!is_dir($folder)) {
-        mkdir($folder, 0755, true);
+    if (!is_dir($folder) && !mkdir($folder, 0755, true)) {
+        return false;
+    }
+    if (!is_writable($folder)) {
+        return false;
     }
 
     $newName = 'img_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $allowed[$mime];
     $path = rtrim($folder, '/\\') . DIRECTORY_SEPARATOR . $newName;
 
     if (move_uploaded_file($file['tmp_name'], $path)) {
+        @chmod($path, 0644);
         return $newName;
     }
     return false;
+}
+
+function delete_uploaded_file($folder, $filename)
+{
+    $basename = basename((string)$filename);
+    if ($basename === '' || $basename !== (string)$filename) {
+        return false;
+    }
+
+    $path = rtrim($folder, '/\\') . DIRECTORY_SEPARATOR . $basename;
+    $realFolder = realpath($folder);
+    $realPath = realpath($path);
+    if ($realFolder === false || $realPath === false || strpos($realPath, $realFolder . DIRECTORY_SEPARATOR) !== 0) {
+        return false;
+    }
+
+    return is_file($realPath) && unlink($realPath);
 }
 
 function nights_between($checkIn, $checkOut)

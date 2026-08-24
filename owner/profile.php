@@ -22,10 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($action === 'profile') {
         $activeTab = 'profile';
-        $name = trim($_POST['full_name'] ?? '');
-        $phone = trim($_POST['phone'] ?? '');
-        $business = trim($_POST['business_name'] ?? '');
-        $bio = trim($_POST['bio'] ?? '');
+        $name = input_string($_POST['full_name'] ?? '', 120);
+        $phone = input_string($_POST['phone'] ?? '', 20);
+        $business = input_string($_POST['business_name'] ?? '', 150);
+        $bio = input_string($_POST['bio'] ?? '', 1000);
         $img = $user['profile_image'];
         
         if (!empty($_FILES['profile_image']['name'])) {
@@ -33,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($up) $img = $up;
         }
         
-        if ($name) {
+        if (!valid_phone($phone)) {
+            $error = 'Enter a valid phone number.';
+        } elseif (valid_name($name)) {
             $conn->prepare('UPDATE users SET full_name=?, phone=?, profile_image=? WHERE id=?')->execute([$name, $phone ?: null, $img, $uid]);
             $conn->prepare('UPDATE owners SET business_name=?, bio=? WHERE id=?')->execute([$business ?: null, $bio ?: null, $ownerId]);
             $_SESSION['full_name'] = $name;
@@ -61,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'All password fields are required.';
         } elseif ($newPass !== $confirmPass) {
             $error = 'New password and confirm password do not match.';
-        } elseif (strlen($newPass) < 6) {
-            $error = 'New password must be at least 6 characters long.';
+        } elseif (!valid_password($newPass)) {
+            $error = 'New password must be at least 8 characters long.';
         } elseif (!password_verify($currentPass, $user['password'])) {
             $error = 'Incorrect current password.';
         } else {

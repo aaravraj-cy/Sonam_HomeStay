@@ -6,7 +6,7 @@ $ownerId = get_owner_id();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
     $rid = (int)($_POST['review_id'] ?? 0);
-    $reply = trim($_POST['owner_reply'] ?? '');
+    $reply = input_string($_POST['owner_reply'] ?? '', 1000);
     $chk = $conn->prepare('SELECT r.id FROM reviews r JOIN homestays h ON h.id=r.homestay_id WHERE r.id=? AND h.owner_id=?');
     $chk->execute([$rid, $ownerId]);
     if ($chk->fetch() && $reply != '') {

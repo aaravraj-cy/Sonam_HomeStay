@@ -2,8 +2,29 @@
 // Start session safely
 require_once __DIR__ . '/constants.php';
 
+function request_is_https()
+{
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        return true;
+    }
+    if (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') {
+        return true;
+    }
+    return strtolower($_SERVER['REQUEST_SCHEME'] ?? '') === 'https';
+}
+
+if (!headers_sent()) {
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+    if (request_is_https()) {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    }
+}
+
 if (session_status() === PHP_SESSION_NONE) {
-    $secureCookie = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $secureCookie = request_is_https();
     session_set_cookie_params([
         'lifetime' => 0,
         'path' => '/',
@@ -39,7 +60,7 @@ function refresh_login_session()
 
 function set_remember_cookie($value, $expires)
 {
-    $secureCookie = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $secureCookie = request_is_https();
     setcookie('sn_remember', $value, [
         'expires' => $expires,
         'path' => '/',

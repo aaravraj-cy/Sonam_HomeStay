@@ -14,16 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? 'profile';
 
     if ($action === 'profile') {
-        $name = trim($_POST['full_name'] ?? '');
-        $phone = trim($_POST['phone'] ?? '');
-        $city = trim($_POST['city'] ?? '');
+        $name = input_string($_POST['full_name'] ?? '', 120);
+        $phone = input_string($_POST['phone'] ?? '', 20);
+        $city = input_string($_POST['city'] ?? '', 100);
         $img = $user['profile_image'];
         if (!empty($_FILES['profile_image']['name'])) {
             $up = upload_image($_FILES['profile_image'], UPLOAD_PROFILES);
             if ($up) $img = $up;
             else $error = 'Invalid image.';
         }
-        if ($name && !$error) {
+        if (!$error && !valid_phone($phone)) {
+            $error = 'Enter a valid phone number.';
+        } elseif (valid_name($name) && !$error) {
             $conn->prepare('UPDATE users SET full_name=?, phone=?, city=?, profile_image=? WHERE id=?')->execute([$name, $phone ?: null, $city ?: null, $img, $uid]);
             $_SESSION['full_name'] = $name;
             $_SESSION['profile_image'] = $img;
@@ -38,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $new = $_POST['new_password'] ?? '';
         $c2 = $_POST['confirm_password'] ?? '';
         if (!password_verify($cur, $user['password'])) $error = 'Wrong current password.';
-        elseif (strlen($new) < 6) $error = 'Password must be at least 6 characters.';
+        elseif (!valid_password($new)) $error = 'Password must be at least 8 characters.';
         elseif ($new !== $c2) $error = 'Passwords do not match.';
         else {
             $conn->prepare('UPDATE users SET password=? WHERE id=?')->execute([password_hash($new, PASSWORD_DEFAULT), $uid]);

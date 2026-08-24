@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'cancel' && in_array($b['status'], ['pending', 'confirmed'])) {
-        $reason = trim($_POST['cancellation_reason'] ?? '');
+        $reason = input_string($_POST['cancellation_reason'] ?? '', 500);
         $conn->prepare("UPDATE bookings SET status='cancelled', cancellation_reason=? WHERE id=?")->execute([$reason ?: null, $id]);
         $o = $conn->prepare('SELECT o.user_id FROM owners o JOIN homestays h ON h.owner_id=o.id WHERE h.id=?');
         $o->execute([$b['homestay_id']]);
@@ -41,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'review' && !$existingReview) {
         $rating = (int)($_POST['rating'] ?? 0);
-        $comment = trim($_POST['comment'] ?? '');
-        $title = trim($_POST['title'] ?? '');
+        $comment = input_string($_POST['comment'] ?? '', 2000);
+        $title = input_string($_POST['title'] ?? '', 150);
         if ($rating < 1 || $rating > 5 || strlen($comment) < 5) {
             $error = 'Please select a rating and write a comment (min 5 characters).';
         } else {

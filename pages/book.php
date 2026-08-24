@@ -110,9 +110,9 @@ function booking_validation_error($checkIn, $checkOut, $guests, $room, $roomId, 
 
 function create_pending_booking($homestayId, $roomId, $room, $homestay, $user, $checkIn, $checkOut, $guests, $guestName = '', $guestEmail = '', $guestPhone = '', $special = '', $isFallbackRoom = false)
 {
-    $guestName = trim($guestName) ?: ($user['full_name'] ?? '');
-    $guestEmail = trim($guestEmail) ?: ($user['email'] ?? '');
-    $guestPhone = trim($guestPhone) ?: ($user['phone'] ?? '');
+    $guestName = input_string($guestName, 120) ?: ($user['full_name'] ?? '');
+    $guestEmail = input_string($guestEmail, 150) ?: ($user['email'] ?? '');
+    $guestPhone = input_string($guestPhone, 20) ?: ($user['phone'] ?? '');
     $nights = nights_between($checkIn, $checkOut);
     $subtotal = (float)$room['price_per_night'] * $nights;
     $cleaning = (float)$room['cleaning_fee'];
@@ -128,7 +128,7 @@ function create_pending_booking($homestayId, $roomId, $room, $homestay, $user, $
         'guest_name' => $guestName,
         'guest_email' => $guestEmail,
         'guest_phone' => $guestPhone,
-        'special_requests' => trim($special),
+        'special_requests' => input_string($special, 1000),
         'nights' => $nights,
         'subtotal' => $subtotal,
         'cleaning_fee' => $cleaning,
@@ -158,13 +158,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $checkIn = trim($_POST['check_in'] ?? '');
     $checkOut = trim($_POST['check_out'] ?? '');
     $guests = max(1, (int)($_POST['guests'] ?? 1));
-    $guestName = trim($_POST['guest_name'] ?? '');
-    $guestEmail = trim($_POST['guest_email'] ?? '');
-    $guestPhone = trim($_POST['guest_phone'] ?? '');
-    $special = trim($_POST['special_requests'] ?? '');
+    $guestName = input_string($_POST['guest_name'] ?? '', 120);
+    $guestEmail = input_string($_POST['guest_email'] ?? '', 150);
+    $guestPhone = input_string($_POST['guest_phone'] ?? '', 20);
+    $special = input_string($_POST['special_requests'] ?? '', 1000);
 
     $error = booking_validation_error($checkIn, $checkOut, $guests, $room, $roomId, $isFallbackRoom);
-    if ($error === '' && (strlen($guestName) < 2 || !filter_var($guestEmail, FILTER_VALIDATE_EMAIL) || strlen($guestPhone) < 7)) {
+    if ($error === '' && (!valid_name($guestName) || !filter_var($guestEmail, FILTER_VALIDATE_EMAIL) || !valid_phone($guestPhone))) {
         $error = 'Enter valid guest details.';
     }
     if ($error === '') {

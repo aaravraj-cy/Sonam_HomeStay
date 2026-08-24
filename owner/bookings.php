@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 set_flash('success', 'Booking accepted successfully.');
             }
             if ($action === 'reject') {
-                $reason = trim($_POST['reason'] ?? '');
+                $reason = input_string($_POST['reason'] ?? '', 500);
                 $conn->prepare("UPDATE bookings SET status='rejected', cancellation_reason=? WHERE id=?")->execute([$reason ?: null, $bid]);
                 add_notification($booking['user_id'], 'Booking rejected', $booking['booking_ref'] . ' was rejected.', BASE_URL . 'user/booking-details.php?id=' . $bid);
                 set_flash('success', 'Booking rejected successfully.');
@@ -42,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect(BASE_URL . 'owner/bookings.php');
 }
 
-$status = trim($_GET['status'] ?? '');
-$search = trim($_GET['search'] ?? '');
+$status = input_string($_GET['status'] ?? '', 30);
+$search = input_string($_GET['search'] ?? '', 100);
 
 $sql = "SELECT b.*, h.title, u.full_name AS guest, u.email AS guest_email, u.phone AS guest_phone, u.profile_image, 
         p.transaction_id, p.payment_method, p.status AS payment_status 

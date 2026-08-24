@@ -15,6 +15,9 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
     $method = $_POST['payment_method'] ?? 'card';
+    if (!in_array($method, ['card', 'upi'], true)) {
+        $method = 'card';
+    }
     $cardNum = preg_replace('/\s+/', '', $_POST['card_number'] ?? '');
     $cardExpiry = trim($_POST['card_expiry'] ?? '');
     $cardCvv = trim($_POST['card_cvv'] ?? '');

@@ -115,10 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($targetImage) {
             // Delete file
-            $filePath = UPLOAD_ROOMS . $targetImage['image_path'];
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
+            delete_uploaded_file(UPLOAD_ROOMS, $targetImage['image_path']);
             
             // Delete record
             $conn->prepare("DELETE FROM room_images WHERE id = ?")->execute([$imageId]);

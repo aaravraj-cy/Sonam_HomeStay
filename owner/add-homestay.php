@@ -9,19 +9,23 @@ $title = $desc = $address = $city = $state = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
-    $title = trim($_POST['title'] ?? '');
-    $desc = trim($_POST['description'] ?? '');
-    $type = trim($_POST['property_type'] ?? 'Homestay');
-    $address = trim($_POST['address'] ?? '');
-    $city = trim($_POST['city'] ?? 'Khechuperi');
-    $state = trim($_POST['state'] ?? 'West Sikkim');
-    $pincode = trim($_POST['pincode'] ?? '737113');
-    $rules = trim($_POST['house_rules'] ?? '');
+    $title = input_string($_POST['title'] ?? '', 200);
+    $desc = input_string($_POST['description'] ?? '', 5000);
+    $type = input_string($_POST['property_type'] ?? 'Homestay', 50);
+    $address = input_string($_POST['address'] ?? '', 500);
+    $city = input_string($_POST['city'] ?? 'Khechuperi', 100);
+    $state = input_string($_POST['state'] ?? 'West Sikkim', 100);
+    $pincode = input_string($_POST['pincode'] ?? '737113', 20);
+    $rules = input_string($_POST['house_rules'] ?? '', 1000);
     $selected = array_map('intval', $_POST['amenities'] ?? []);
+
+    if (!in_array($type, ['Homestay', 'Cottage', 'Villa', 'Apartment'], true)) {
+        $type = 'Homestay';
+    }
 
     if (strlen($title) < 5 || strlen($desc) < 20) {
         $error = 'Title must be at least 5 chars and description at least 20 chars.';
-    } elseif ($city == '' || $state == '' || $address == '') {
+    } elseif ($city == '' || $state == '' || $address == '' || ($pincode !== '' && !preg_match('/^[0-9A-Za-z -]{3,20}$/', $pincode))) {
         $error = 'Address, city and state are required fields.';
     } else {
         $cover = null;

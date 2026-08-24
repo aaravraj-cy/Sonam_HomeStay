@@ -23,12 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($action === 'request') {
-        $email = trim($_POST['email'] ?? '');
+        if (!rate_limit('password_reset', 5, 900)) {
+            $success = 'If an account exists for that email address, a password reset link has been sent.';
+            $email = '';
+        } else {
+            $email = input_string($_POST['email'] ?? '', 150);
+        }
         $stmt = $conn->prepare('SELECT id, full_name FROM users WHERE email = ?');
         $stmt->execute([$email]);
         $user = $stmt->fetch();
 
-        if ($user) {
+        if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL) && $user) {
             $token = bin2hex(random_bytes(16));
             $tokenHash = hash('sha256', $token);
             $conn->prepare('DELETE FROM password_resets WHERE email = ?')->execute([$email]);
@@ -88,8 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $confirm = $_POST['password_confirm'] ?? '';
         $step = 'reset';
 
-        if (strlen($password) < 6) {
-            $error = 'Password must be at least 6 characters.';
+        if (!valid_password($password)) {
+            $error = 'Password must be at least 8 characters.';
         } elseif ($password !== $confirm) {
             $error = 'Passwords do not match.';
         } else {

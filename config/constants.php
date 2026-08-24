@@ -66,6 +66,8 @@ function base_url_from_env()
 }
 
 define('APP_NAME', 'Sonam Homestay');
+define('APP_ENV', strtolower(env_value('APP_ENV', 'production')));
+define('APP_DEBUG', in_array(strtolower(env_value('APP_DEBUG', '0')), ['1', 'true', 'yes', 'on'], true));
 define('BASE_URL', base_url_from_env());
 define('BASE_PATH', dirname(__DIR__) . '/');
 
@@ -77,6 +79,8 @@ define('DB_PASS', env_value('DB_PASS', ''));
 define('DB_SSL_CA', env_value('DB_SSL_CA', ''));
 define('DB_SSL_CA_CONTENT', env_value('DB_SSL_CA_CONTENT', ''));
 define('DB_SSL_CA_BASE64', env_value('DB_SSL_CA_BASE64', ''));
+define('DB_DEBUG', in_array(strtolower(env_value('DB_DEBUG', '0')), ['1', 'true', 'yes', 'on'], true));
+define('DB_AUTO_MIGRATE', in_array(strtolower(env_value('DB_AUTO_MIGRATE', '0')), ['1', 'true', 'yes', 'on'], true));
 
 function db_ssl_ca_path()
 {
@@ -94,14 +98,6 @@ function db_ssl_ca_path()
         return $resolvedPath;
     }
 
-    if (DB_SSL_CA_CONTENT !== '') {
-        $resolvedPath = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'sonam-aiven-ca.pem';
-        $caContent = str_replace("\\n", "\n", DB_SSL_CA_CONTENT);
-        file_put_contents($resolvedPath, $caContent);
-        @chmod($resolvedPath, 0600);
-        return $resolvedPath;
-    }
-
     if (DB_SSL_CA_BASE64 !== '') {
         $resolvedPath = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'sonam-aiven-ca.pem';
         $caContent = base64_decode(DB_SSL_CA_BASE64, true);
@@ -110,6 +106,14 @@ function db_ssl_ca_path()
             @chmod($resolvedPath, 0600);
             return $resolvedPath;
         }
+    }
+
+    if (DB_SSL_CA_CONTENT !== '') {
+        $resolvedPath = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'sonam-aiven-ca.pem';
+        $caContent = str_replace("\\n", "\n", DB_SSL_CA_CONTENT);
+        file_put_contents($resolvedPath, $caContent);
+        @chmod($resolvedPath, 0600);
+        return $resolvedPath;
     }
 
     $resolvedPath = '';

@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!isset($_FILES['images']) || empty($_FILES['images']['name'][0])) {
             $error = 'Please select at least one image to upload.';
         } else {
-            $title = trim($_POST['title'] ?? '');
-            $city = trim($_POST['city'] ?? '');
+            $title = input_string($_POST['title'] ?? '', 150);
+            $city = input_string($_POST['city'] ?? '', 100);
             $uploadedCount = 0;
             
             $files = $_FILES['images'];
@@ -69,10 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($targetImage) {
             // Delete actual file
-            $filePath = UPLOAD_GALLERY . $targetImage['image_path'];
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
+            delete_uploaded_file(UPLOAD_GALLERY, $targetImage['image_path']);
             
             // Delete record
             $conn->prepare("DELETE FROM gallery_images WHERE id = ?")->execute([$imageId]);

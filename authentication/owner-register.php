@@ -16,20 +16,22 @@ $name = $email = $phone = $business = $city = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
 
-    $name = trim($_POST['full_name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $business = trim($_POST['business_name'] ?? '');
-    $city = trim($_POST['city'] ?? '');
+    $name = input_string($_POST['full_name'] ?? '', 120);
+    $email = input_string($_POST['email'] ?? '', 150);
+    $phone = input_string($_POST['phone'] ?? '', 20);
+    $business = input_string($_POST['business_name'] ?? '', 150);
+    $city = input_string($_POST['city'] ?? '', 100);
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['password_confirm'] ?? '';
 
-    if (strlen($name) < 2 || strlen($business) < 2) {
+    if (!valid_name($name) || strlen($business) < 2) {
         $error = 'Name and business name are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Enter a valid email.';
-    } elseif (strlen($password) < 6) {
-        $error = 'Password must be at least 6 characters.';
+    } elseif (!valid_phone($phone)) {
+        $error = 'Enter a valid phone number.';
+    } elseif (!valid_password($password)) {
+        $error = 'Password must be at least 8 characters.';
     } elseif ($password !== $confirm) {
         $error = 'Passwords do not match.';
     } else {
