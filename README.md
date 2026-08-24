@@ -31,6 +31,7 @@ DB_USER=
 DB_PASS=
 DB_SSL_CA=
 DB_SSL_CA_CONTENT=
+DB_SSL_CA_BASE64=
 BASE_URL=
 ```
 
@@ -38,7 +39,7 @@ For Aiven MySQL, keep `DB_NAME=sonamDB` to match the existing application/schema
 
 `database/sonam.sql` contains `CREATE DATABASE IF NOT EXISTS sonamDB`, `USE sonamDB`, and `DROP TABLE IF EXISTS` statements. Import it only into a new/empty `sonamDB` database or after taking a backup.
 
-Download the Aiven CA certificate from the Aiven Console for the MySQL service. For a normal server, save it outside the public web root where possible and set `DB_SSL_CA` to that file path. For Railway, paste the certificate text into `DB_SSL_CA_CONTENT` instead of committing a `.pem` file.
+Download the Aiven CA certificate from the Aiven Console for the MySQL service. For a normal server, save it outside the public web root where possible and set `DB_SSL_CA` to that file path. For Railway, prefer `DB_SSL_CA_BASE64` so the certificate can be stored as one line. `DB_SSL_CA_CONTENT` also works when multiline values are preserved correctly.
 
 ## Railway deployment
 
@@ -51,6 +52,7 @@ DB_NAME=sonamDB
 DB_USER=
 DB_PASS=
 DB_SSL_CA_CONTENT=
+DB_SSL_CA_BASE64=
 BASE_URL=
 ```
 

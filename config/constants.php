@@ -76,6 +76,7 @@ define('DB_USER', env_value('DB_USER', 'root'));
 define('DB_PASS', env_value('DB_PASS', ''));
 define('DB_SSL_CA', env_value('DB_SSL_CA', ''));
 define('DB_SSL_CA_CONTENT', env_value('DB_SSL_CA_CONTENT', ''));
+define('DB_SSL_CA_BASE64', env_value('DB_SSL_CA_BASE64', ''));
 
 function db_ssl_ca_path()
 {
@@ -99,6 +100,16 @@ function db_ssl_ca_path()
         file_put_contents($resolvedPath, $caContent);
         @chmod($resolvedPath, 0600);
         return $resolvedPath;
+    }
+
+    if (DB_SSL_CA_BASE64 !== '') {
+        $resolvedPath = rtrim(sys_get_temp_dir(), '/\\') . DIRECTORY_SEPARATOR . 'sonam-aiven-ca.pem';
+        $caContent = base64_decode(DB_SSL_CA_BASE64, true);
+        if ($caContent !== false) {
+            file_put_contents($resolvedPath, $caContent);
+            @chmod($resolvedPath, 0600);
+            return $resolvedPath;
+        }
     }
 
     $resolvedPath = '';
