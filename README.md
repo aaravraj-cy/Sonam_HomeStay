@@ -10,7 +10,7 @@
 
 ## Important rules
 
-- **users or homestays** — database starts empty
+- **users or homestays** — database_starts_empty
 - **Only ONE owner** can register in the whole system
 - Many **guest users** can register
 - Forms use normal **POST/GET**
