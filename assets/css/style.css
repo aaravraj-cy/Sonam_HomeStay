@@ -674,7 +674,7 @@ img { max-width: 100%; height: auto; }
     color: #fff;
     background:
         linear-gradient(90deg, rgba(6, 22, 21, 0.9), rgba(6, 22, 21, 0.62) 46%, rgba(15, 23, 42, 0.18)),
-        url('../uploads/rooms/room_photo_1787497039_2353.jpeg') center / cover no-repeat;
+        url('../uploads/rooms/sikkim-double-room.png') center / cover no-repeat;
     overflow: hidden;
 }
 .rooms-hero::after {
@@ -1578,7 +1578,7 @@ img { max-width: 100%; height: auto; }
         transform: scale(1.08);
     }
     50%, 70% {
-        background-image: url('../uploads/rooms/room_photo_1787497039_2353.jpeg');
+        background-image: url('../uploads/rooms/sikkim-family-room.png');
         transform: scale(1.05);
     }
     75%, 95% {
