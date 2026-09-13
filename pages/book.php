@@ -142,14 +142,15 @@ function create_pending_booking($homestayId, $roomId, $room, $homestay, $user, $
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if ($checkIn !== '' || $checkOut !== '') {
-        $error = booking_validation_error($checkIn, $checkOut, $guests, $room, $roomId, $isFallbackRoom);
-        if ($error === '') {
-            create_pending_booking($homestayId, $roomId, $room, $homestay, $user, $checkIn, $checkOut, $guests, '', '', '', '', $isFallbackRoom);
-            redirect(BASE_URL . 'pages/payment.php');
+    if ($checkIn !== '' && $checkOut !== '') {
+        $validationErr = booking_validation_error($checkIn, $checkOut, $guests, $room, $roomId, $isFallbackRoom);
+        if ($validationErr !== '') {
+            $error = $validationErr;
+        } else {
+            $notice = 'Please review your dates and guest information, then continue to payment.';
         }
     } else {
-        $notice = 'Select your check-in and check-out dates to continue to the payment gateway.';
+        $notice = 'Select your check-in and check-out dates to view price breakdown and continue.';
     }
 }
 

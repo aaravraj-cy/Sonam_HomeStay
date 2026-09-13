@@ -273,7 +273,9 @@ require __DIR__ . '/includes/header.php';
                     <div class="col-md-7 p-4 d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                <h4 class="fw-bold text-dark mb-0 mt-0 display-font"><?= e($r['name']) ?></h4>
+                                <h4 class="fw-bold text-dark mb-0 mt-0 display-font">
+                                    <a href="<?= e($roomDetailUrl) ?>" class="text-dark text-decoration-none hover-teal"><?= e($r['name']) ?></a>
+                                </h4>
                                 <span class="badge bg-light text-teal border border-teal border-opacity-25 px-2.5 py-1 rounded-pill small"><?= e($r['room_type']) ?></span>
                             </div>
                             <p class="text-secondary small mb-3.5 lh-lg"><?= e($r['description'] ?: 'No description provided for this room.') ?></p>

@@ -134,32 +134,33 @@ require __DIR__ . '/../includes/header.php';
             }
 
             $roomImgUrl = room_image_url($r['cover_image'] ?? '', $isFallbackRoom ? ($fallbackIndex + 1) : (int)$r['id']);
-            $roomDetailUrl = $isFallbackRoom
-                ? BASE_URL . 'pages/room-details.php?fallback_room=' . ($fallbackIndex + 1) . '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut) . '&guests=' . $guests
-                : BASE_URL . 'pages/room-details.php?id=' . (int)$r['id'] . '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut) . '&guests=' . $guests . '&room_type=' . urlencode($roomType);
-            $roomHomestayId = (int)($r['homestay_id'] ?? 1);
-            $roomBookBaseUrl = $isFallbackRoom
-                ? BASE_URL . 'pages/book.php?homestay_id=1&fallback_room=' . ($fallbackIndex + 1)
-                : BASE_URL . 'pages/book.php?homestay_id=' . $roomHomestayId . '&room_id=' . (int)$r['id'];
-            $roomBookUrl = $roomBookBaseUrl . '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut) . '&guests=' . $guests;
-            $roomActionUrl = is_logged_in() ? $roomBookUrl : login_url($roomBookUrl);
+            $roomDetailBaseUrl = $isFallbackRoom
+                ? BASE_URL . 'pages/room-details.php?fallback_room=' . ($fallbackIndex + 1)
+                : BASE_URL . 'pages/room-details.php?id=' . (int)$r['id'];
+            $roomDetailUrl = $roomDetailBaseUrl . '&check_in=' . urlencode($checkIn) . '&check_out=' . urlencode($checkOut) . '&guests=' . $guests . ($roomType ? '&room_type=' . urlencode($roomType) : '');
         ?>
         <div class="col-md-6 col-lg-4">
             <div class="rooms-card h-100" data-aos="fade-up" data-aos-delay="<?= min($fallbackIndex * 35, 180) ?>">
                 <div>
-                    <!-- Room Cover Photo -->
-                    <div class="rooms-card-photo">
-                        <img src="<?= e($roomImgUrl) ?>" alt="<?= e($r['name']) ?>">
-                        <span class="rooms-type-badge"><?= e($r['room_type']) ?></span>
+                    <!-- Room Cover Photo Link -->
+                    <a href="<?= e($roomDetailUrl) ?>" class="d-block text-decoration-none js-room-detail-link" data-base-url="<?= e($roomDetailBaseUrl) ?>">
+                        <div class="rooms-card-photo position-relative overflow-hidden">
+                            <img src="<?= e($roomImgUrl) ?>" alt="<?= e($r['name']) ?>" class="w-100 h-100 object-fit-cover transition">
+                            <span class="rooms-type-badge"><?= e($r['room_type']) ?></span>
 
-                        <?php if ($imgCount > 1): ?>
-                        <span class="rooms-photo-badge"><i class="far fa-images"></i><?= $imgCount ?> Photos</span>
-                        <?php endif; ?>
-                    </div>
+                            <?php if ($imgCount > 1): ?>
+                            <span class="rooms-photo-badge"><i class="far fa-images"></i><?= $imgCount ?> Photos</span>
+                            <?php endif; ?>
+                        </div>
+                    </a>
 
                     <!-- Room Body -->
                     <div class="rooms-card-body">
-                        <h4 class="display-font"><?= e($r['name']) ?></h4>
+                        <h4 class="display-font mb-2">
+                            <a href="<?= e($roomDetailUrl) ?>" class="text-dark text-decoration-none hover-teal js-room-detail-link" data-base-url="<?= e($roomDetailBaseUrl) ?>">
+                                <?= e($r['name']) ?>
+                            </a>
+                        </h4>
                         <p><?= e($r['description'] ?: 'Enjoy comfortable lodgings with stunning mountain views.') ?></p>
 
                         <div class="rooms-meta">
@@ -175,14 +176,19 @@ require __DIR__ . '/../includes/header.php';
                 </div>
 
                 <!-- Room Footer -->
-                <div class="rooms-card-footer">
+                <div class="rooms-card-footer d-flex justify-content-between align-items-center">
                     <div>
-                        <span><?= money($r['price_per_night']) ?></span>
-                        <small>/ night</small>
+                        <span class="fs-5 fw-bold text-teal-deep"><?= money($r['price_per_night']) ?></span>
+                        <small class="text-muted">/ night</small>
                     </div>
-                    <a href="<?= e($roomActionUrl) ?>" class="btn btn-sm btn-primary fw-bold btn-room-book-now" data-base-url="<?= e($roomBookBaseUrl) ?>">
-                        <i class="fas fa-calendar-check"></i>Book
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="<?= e($roomDetailUrl) ?>" class="btn btn-sm btn-outline-teal fw-bold js-room-detail-link" data-base-url="<?= e($roomDetailBaseUrl) ?>">
+                            <i class="fas fa-circle-info me-1"></i>View Details
+                        </a>
+                        <a href="<?= e($roomDetailUrl) ?>" class="btn btn-sm btn-primary fw-bold js-room-detail-link" data-base-url="<?= e($roomDetailBaseUrl) ?>">
+                            <i class="fas fa-calendar-check me-1"></i>Book
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -195,9 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var checkInInput = document.getElementById('roomsCheckIn');
     var checkOutInput = document.getElementById('roomsCheckOut');
     var guestsInput = document.querySelector('select[name="guests"]');
-    var bookButtons = document.querySelectorAll('.btn-room-book-now');
-    var userIsLoggedIn = <?= is_logged_in() ? 'true' : 'false' ?>;
-    var loginBaseUrl = '<?= BASE_URL ?>authentication/login.php?redirect=';
+    var detailLinks = document.querySelectorAll('.js-room-detail-link');
 
     function addDays(dateString, days) {
         var date = new Date(dateString + 'T00:00:00');
@@ -214,31 +218,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function bookingUrl(baseUrl) {
+    function detailUrl(baseUrl) {
         var checkIn = checkInInput ? checkInInput.value : '';
         var checkOut = checkOutInput ? checkOutInput.value : '';
         var guests = guestsInput ? guestsInput.value : '1';
-        return baseUrl + '&check_in=' + encodeURIComponent(checkIn) + '&check_out=' + encodeURIComponent(checkOut) + '&guests=' + encodeURIComponent(guests);
+        var sep = baseUrl.indexOf('?') !== -1 ? '&' : '?';
+        return baseUrl + sep + 'check_in=' + encodeURIComponent(checkIn) + '&check_out=' + encodeURIComponent(checkOut) + '&guests=' + encodeURIComponent(guests);
     }
 
-    function refreshBookLinks() {
+    function refreshLinks() {
         syncCheckoutMin();
-        bookButtons.forEach(function (btn) {
-            var url = bookingUrl(btn.getAttribute('data-base-url'));
-            btn.setAttribute('href', userIsLoggedIn ? url : loginBaseUrl + encodeURIComponent(url));
+        detailLinks.forEach(function (link) {
+            var base = link.getAttribute('data-base-url');
+            if (base) {
+                link.setAttribute('href', detailUrl(base));
+            }
         });
     }
 
-    bookButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            refreshBookLinks();
-        });
-    });
-
-    checkInInput?.addEventListener('change', refreshBookLinks);
-    checkOutInput?.addEventListener('change', refreshBookLinks);
-    guestsInput?.addEventListener('change', refreshBookLinks);
-    refreshBookLinks();
+    checkInInput?.addEventListener('change', refreshLinks);
+    checkOutInput?.addEventListener('change', refreshLinks);
+    guestsInput?.addEventListener('change', refreshLinks);
+    refreshLinks();
 });
 </script>
 
