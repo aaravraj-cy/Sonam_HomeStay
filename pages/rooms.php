@@ -13,8 +13,8 @@ $roomTypes = [
     'Family' => 'Family Room',
 ];
 
-// Fetch all active rooms
-$allRooms = $conn->query("SELECT * FROM rooms WHERE is_active = 1 ORDER BY price_per_night ASC")->fetchAll();
+// Fetch all active rooms for Sonam Homestay
+$allRooms = $conn->query("SELECT * FROM rooms WHERE homestay_id = 1 AND is_active = 1 ORDER BY price_per_night ASC")->fetchAll();
 if (empty($allRooms)) {
     $allRooms = fallback_public_rooms();
 }

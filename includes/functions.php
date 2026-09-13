@@ -189,151 +189,159 @@ function room_photo_urls($imagePaths, $seed = 0)
 function fallback_public_rooms()
 {
     return [
+        // 3 Single Rooms
         [
             'id' => 0,
-            'name' => 'Hill Melody Family Room',
-            'room_type' => 'Family Room',
-            'description' => 'A warm family room inspired by Soreng homestays, with two beds, wooden interiors, attached bathroom convenience, breakfast, and quiet West Sikkim hill views.',
-            'max_guests' => 4,
-            'beds' => 2,
-            'price_per_night' => 2200,
-            'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-family-room.png',
-            'is_fallback' => true,
-        ],
-        [
-            'id' => 0,
-            'name' => 'Spirit of the Land Family Room',
-            'room_type' => 'Family Room',
-            'description' => 'A larger family stay concept influenced by Yuksom village homes, with generous sleeping space, local textiles, meals, and a relaxed farm-to-table atmosphere.',
-            'max_guests' => 4,
-            'beds' => 2,
-            'price_per_night' => 6000,
-            'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-family-room.png',
-            'is_fallback' => true,
-        ],
-        [
-            'id' => 0,
-            'name' => 'Farmtastic Family Cottage',
-            'room_type' => 'Family Room',
-            'description' => 'A cottage-style family room inspired by Yuksom farmstays, suited for families who want privacy, mountain air, and homely dining after day trips.',
-            'max_guests' => 4,
-            'beds' => 2,
-            'price_per_night' => 12000,
-            'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-family-room.png',
-            'is_fallback' => true,
-        ],
-        [
-            'id' => 0,
-            'name' => 'Khecheopalri Family Suite',
-            'room_type' => 'Family Room',
-            'description' => 'A family suite inspired by Khecheopalri and West Sikkim stays, with two comfortable beds, clean wood finishes, and easy access to lake and village trails.',
-            'max_guests' => 4,
-            'beds' => 2,
-            'price_per_night' => 3920,
-            'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-family-room.png',
-            'is_fallback' => true,
-        ],
-        [
-            'id' => 0,
-            'name' => 'Hill Melody Solo Room',
+            'name' => 'Pine Ridge Solo Room',
             'room_type' => 'Single Room',
-            'description' => 'A compact solo room based on Sikkim homestay solo occupancy, with a single bed, work corner, kettle tray, breakfast, and peaceful hillside views.',
+            'description' => 'A cozy mountain solo room with warm pine wood interiors, comfortable single bed, plush wool duvet, brass reading lamp, and large window framing misty Himalayan pine forests.',
             'max_guests' => 1,
             'beds' => 1,
             'price_per_night' => 1500,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-single-room.png',
+            'cover_image' => 'sikkim-single-cozy.jpg',
             'is_fallback' => true,
         ],
         [
             'id' => 0,
-            'name' => 'Snowline Single Room',
+            'name' => 'Attic Sanctuary Single Room',
             'room_type' => 'Single Room',
-            'description' => 'A simple single room inspired by South Sikkim stays, designed for one guest who wants a clean base, hot water, breakfast, and calm evening weather.',
+            'description' => 'A peaceful attic retreat featuring exposed wooden timber rafters, cozy single bed with traditional Sikkimese quilt, small writing desk, and dormer window opening to alpine peaks.',
             'max_guests' => 1,
             'beds' => 1,
-            'price_per_night' => 1700,
+            'price_per_night' => 1650,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-single-room.png',
+            'cover_image' => 'sikkim-single-attic.jpg',
             'is_fallback' => true,
         ],
         [
             'id' => 0,
-            'name' => 'Shining Star Single Room',
+            'name' => 'Garden Meadow Single Room',
             'room_type' => 'Single Room',
-            'description' => 'A budget-friendly single room inspired by Okhrey homestays, with a tidy bed, warm wooden detail, and a practical layout for solo nature travel.',
+            'description' => 'A bright ground-floor single room with natural cedar wood finish, attached bath, and large windows looking onto the homestay flower garden and organic orchard.',
             'max_guests' => 1,
             'beds' => 1,
-            'price_per_night' => 1300,
+            'price_per_night' => 1400,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-single-room.png',
+            'cover_image' => 'sikkim-single-garden.jpg',
             'is_fallback' => true,
         ],
+        // 3 Double Rooms
         [
             'id' => 0,
-            'name' => 'Soulful Peaks Single Room',
-            'room_type' => 'Single Room',
-            'description' => 'A restful single room inspired by Tadong and West Sikkim listings, suited for solo guests who value quiet interiors and mountain-view mornings.',
-            'max_guests' => 1,
-            'beds' => 1,
-            'price_per_night' => 1500,
-            'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-single-room.png',
-            'is_fallback' => true,
-        ],
-        [
-            'id' => 0,
-            'name' => 'Hill Melody Classic Double',
+            'name' => 'Kanchenjunga Vista Double',
             'room_type' => 'Double Room',
-            'description' => 'A classic double room inspired by Soreng homestays, with a large bed, attached bathroom, breakfast, and a comfortable setup for two guests.',
+            'description' => 'A premier double room featuring a handcrafted king-sized wooden bed, soft linen, warm ambient lighting, and panoramic bay windows overlooking the majestic Kanchenjunga range.',
             'max_guests' => 2,
             'beds' => 1,
-            'price_per_night' => 1800,
+            'price_per_night' => 2400,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-double-room.png',
+            'cover_image' => 'sikkim-double-kanchenjunga.jpg',
             'is_fallback' => true,
         ],
         [
             'id' => 0,
-            'name' => 'Hillstop Classic Double',
+            'name' => 'Himalayan Balcony Double',
             'room_type' => 'Double Room',
-            'description' => 'A neat classic double room inspired by Saldara stays, with clean interiors, attached bathroom, breakfast, tea, snacks, and forested hill surroundings.',
+            'description' => 'A romantic couple room featuring wooden floors, artisanal textiles, tea-seating nook, and direct access to a private wooden balcony with valley breezes.',
             'max_guests' => 2,
             'beds' => 1,
-            'price_per_night' => 2000,
+            'price_per_night' => 2100,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-double-room.png',
+            'cover_image' => 'sikkim-double-balcony.jpg',
             'is_fallback' => true,
         ],
         [
             'id' => 0,
-            'name' => 'The Mountain Porch Double',
+            'name' => 'Heritage Timber Double Room',
             'room_type' => 'Double Room',
-            'description' => 'A private double room inspired by East Sikkim porch stays, with soft bedding, a tea table, balcony-style views, and a quiet couple-friendly layout.',
+            'description' => 'Richly finished in local pine and cedar, this heritage room offers a comfortable queen bed, carved wooden accents, traditional brass kettle set, and scenic hill views.',
             'max_guests' => 2,
             'beds' => 1,
-            'price_per_night' => 2800,
+            'price_per_night' => 2250,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-double-room.png',
+            'cover_image' => 'sikkim-double-heritage.jpg',
+            'is_fallback' => true,
+        ],
+        // 3 Family Rooms
+        [
+            'id' => 0,
+            'name' => 'Pinewood Family Suite',
+            'room_type' => 'Family Room',
+            'description' => 'A spacious multi-bed family suite with two queen beds, warm wooden paneling, traditional choktse tea table, and expansive forest and valley viewpoints.',
+            'max_guests' => 4,
+            'beds' => 2,
+            'price_per_night' => 3600,
+            'cleaning_fee' => 0,
+            'cover_image' => 'sikkim-family-suite.jpg',
             'is_fallback' => true,
         ],
         [
             'id' => 0,
-            'name' => 'Eastern Horizon Double Room',
-            'room_type' => 'Double Room',
-            'description' => 'A Gangtok-inspired double room with warm wood, clean linen, hillside light, hot water, breakfast, and a polished stay for two guests.',
-            'max_guests' => 2,
-            'beds' => 1,
-            'price_per_night' => 3000,
+            'name' => 'Valley View Family Cottage',
+            'room_type' => 'Family Room',
+            'description' => 'A cottage-style family haven with exposed stone accents, two large beds, wool rugs, cozy sitting space, and sweeping views of the Khecheopalri ridges.',
+            'max_guests' => 4,
+            'beds' => 2,
+            'price_per_night' => 3850,
             'cleaning_fee' => 0,
-            'cover_image' => 'sikkim-double-room.png',
+            'cover_image' => 'sikkim-family-cottage.jpg',
+            'is_fallback' => true,
+        ],
+        [
+            'id' => 0,
+            'name' => 'Alpine Loft Family Room',
+            'room_type' => 'Family Room',
+            'description' => 'A warm, split-layout family room with two comfortable double beds, wooden ceiling beams, dedicated seating area, and morning sunrise views over the Sikkim hills.',
+            'max_guests' => 4,
+            'beds' => 2,
+            'price_per_night' => 3400,
+            'cleaning_fee' => 0,
+            'cover_image' => 'sikkim-family-loft.jpg',
             'is_fallback' => true,
         ],
     ];
+}
+
+function gallery_meta_for_file($filename)
+{
+    static $map = [
+        'img_1787408512_7207.jpg' => ['title' => 'Misty Mountain Ranges of West Sikkim', 'city' => 'West Sikkim'],
+        'img_1787408513_8655.jpeg' => ['title' => 'Snow-Capped Kanchenjunga Peak', 'city' => 'West Sikkim'],
+        'img_1787408513_5684.jpg' => ['title' => 'Himalayan Butterfly on Wildflower', 'city' => 'West Sikkim'],
+        'img_1787408513_3255.jpg' => ['title' => 'Rhododendron Blossoms & Snow Peaks', 'city' => 'West Sikkim'],
+        'img_1787408513_2903.jpg' => ['title' => 'Tibetan Snow Lion Guardian at Monastery', 'city' => 'West Sikkim'],
+        'img_1787408513_2774.jpg' => ['title' => 'Golden Valley Sunset in West Sikkim', 'city' => 'West Sikkim'],
+        'img_1787408513_2574.jpeg' => ['title' => 'Green Meadow & Mountain Ridge', 'city' => 'West Sikkim'],
+        'img_1787408513_4199.jpg' => ['title' => 'Sonam Homestay Village Cottages', 'city' => 'West Sikkim'],
+        'img_1787408513_1035.jpeg' => ['title' => 'Travelers Gathering with Royal Enfield', 'city' => 'West Sikkim'],
+        'img_1787408513_2150.jpeg' => ['title' => 'Sikkim Sacred Lakes Trek Night Camping', 'city' => 'West Sikkim'],
+        'img_1787408513_7151.jpeg' => ['title' => 'Morning Meditation on the Ridge', 'city' => 'West Sikkim'],
+        'img_1787408513_8162.jpeg' => ['title' => 'Winter Snowfall & Prayer Flags', 'city' => 'West Sikkim'],
+        'img_1787408514_1785.jpeg' => ['title' => 'Cozy Dining with Guests & Host Family', 'city' => 'West Sikkim'],
+        'img_1787408514_6766.jpeg' => ['title' => 'Golden Yellow Orchids in Garden', 'city' => 'West Sikkim'],
+        'img_1787408514_7212.jpeg' => ['title' => 'Cymbidium Orchids of Sikkim', 'city' => 'West Sikkim'],
+        'img_1787408514_4750.jpeg' => ['title' => 'Blue Hydrangeas Along Stone Path', 'city' => 'West Sikkim'],
+        'img_1787408514_7532.jpeg' => ['title' => 'Himalayan Fuchsia Flowers', 'city' => 'West Sikkim'],
+        'img_1787408514_8751.jpeg' => ['title' => 'Pink Mountain Bell Flower', 'city' => 'West Sikkim'],
+        'img_1787408514_2395.jpg' => ['title' => 'Azure Skies & Himalayan Vista', 'city' => 'West Sikkim'],
+        'img_1787408514_1429.jpg' => ['title' => 'Sunset Glow on Himalayan Range', 'city' => 'West Sikkim'],
+        'img_1787408514_2834.jpg' => ['title' => 'Fresh Organic Nakima & Wild Delicacies', 'city' => 'West Sikkim'],
+        'img_1787408514_6541.jpg' => ['title' => 'Sacred Khecheopalri Wish-Fulfilling Lake', 'city' => 'Khechuperi Lake'],
+        'img_1787408514_6141.jpg' => ['title' => 'Aerial Map - Homestay & Lake Location', 'city' => 'West Sikkim'],
+        'img_1787408514_1707.jpg' => ['title' => 'Khecheopalri Monastery Pagoda Shrine', 'city' => 'Khechuperi'],
+        'img_1787408515_6185.jpg' => ['title' => 'Alpenglow Sunset on Mt. Pandim', 'city' => 'West Sikkim'],
+        'img_1787408515_6193.jpg' => ['title' => 'Golden Sunrise Over Western Hills', 'city' => 'West Sikkim'],
+        'img_1787408515_1747.jpg' => ['title' => 'Ancient Pine & Mossy Forest Trail', 'city' => 'Yuksom'],
+    ];
+
+    $basename = basename((string)$filename);
+    if (isset($map[$basename])) {
+        return $map[$basename];
+    }
+
+    $clean = trim(ucwords(str_replace(['-', '_'], ' ', pathinfo($basename, PATHINFO_FILENAME))));
+    return ['title' => $clean ?: 'Sonam Homestay Photo', 'city' => 'Sikkim'];
 }
 
 function fallback_gallery_items($limit = 10)
@@ -349,14 +357,14 @@ function fallback_gallery_items($limit = 10)
 
     return array_map(function ($url, $index) {
         $path = parse_url($url, PHP_URL_PATH) ?: '';
-        $name = pathinfo(urldecode(basename($path)), PATHINFO_FILENAME);
-        $title = trim(ucwords(str_replace(['-', '_'], ' ', $name)));
+        $base = basename($path);
+        $meta = gallery_meta_for_file($base);
         return [
             'id' => 0,
             'image_url' => $url,
-            'image_path' => basename($path),
-            'title' => $title ?: 'Sonam Homestay Photo ' . ($index + 1),
-            'city' => 'Sikkim',
+            'image_path' => $base,
+            'title' => $meta['title'],
+            'city' => $meta['city'],
             'sort_order' => $index + 1,
             'is_fallback' => true,
         ];
@@ -763,4 +771,77 @@ function time_elapsed($datetime, $full = false)
 
     if (!$full) $result = array_slice($result, 0, 1);
     return $result ? implode(', ', $result) . ' ago' : 'just now';
+}
+
+function razorpay_key_id()
+{
+    return defined('RAZORPAY_KEY_ID') ? RAZORPAY_KEY_ID : 'rzp_test_TFfbjUQG491P06';
+}
+
+function razorpay_key_secret()
+{
+    return defined('RAZORPAY_KEY_SECRET') ? RAZORPAY_KEY_SECRET : 'SDBgRbud5fbmpPhvw2MuNbGSDf';
+}
+
+function razorpay_create_order($amountInRupees, $receipt = '', $notes = [], &$errorMsg = null)
+{
+    $keyId = razorpay_key_id();
+    $keySecret = razorpay_key_secret();
+    if (empty($keyId) || empty($keySecret)) {
+        $errorMsg = 'Key ID or Key Secret is not configured.';
+        return null;
+    }
+
+    $url = 'https://api.razorpay.com/v1/orders';
+    $payload = [
+        'amount' => (int)round((float)$amountInRupees * 100),
+        'currency' => 'INR',
+        'receipt' => $receipt ?: ('rcpt_' . bin2hex(random_bytes(4))),
+        'notes' => $notes,
+    ];
+
+    $ch = curl_init($url);
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_USERPWD => $keyId . ':' . $keySecret,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => false,
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode >= 200 && $httpCode < 300 && $response) {
+        $data = json_decode($response, true);
+        if (!empty($data['id'])) {
+            return $data;
+        }
+    }
+
+    if ($response) {
+        $data = json_decode($response, true);
+        if (!empty($data['error']['description'])) {
+            $errorMsg = 'Razorpay API (' . $httpCode . '): ' . $data['error']['description'];
+        } else {
+            $errorMsg = 'Razorpay API returned HTTP ' . $httpCode;
+        }
+    } else {
+        $errorMsg = 'Unable to reach Razorpay API.';
+    }
+
+    return null;
+}
+
+function razorpay_verify_signature($orderId, $paymentId, $signature)
+{
+    $keySecret = razorpay_key_secret();
+    if (empty($keySecret) || empty($orderId) || empty($paymentId) || empty($signature)) {
+        return false;
+    }
+    $expected = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);
+    return hash_equals($expected, $signature);
 }

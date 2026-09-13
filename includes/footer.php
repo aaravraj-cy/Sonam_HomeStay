@@ -75,6 +75,7 @@
 <!-- Floating Scroll to Top Button -->
 <button type="button" id="scrollToTop" class="scroll-to-top-btn">
     <i class="fas fa-arrow-up"></i>
+    
     <span>Go to top</span>
 </button>
 

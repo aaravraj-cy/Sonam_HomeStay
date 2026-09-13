@@ -21,10 +21,11 @@ if (empty($galleryImages) && is_dir(UPLOAD_GALLERY)) {
 
     foreach (array_slice($files, 0, 48) as $file) {
         $name = basename($file);
+        $meta = gallery_meta_for_file($name);
         $galleryImages[] = [
             'image_path' => $name,
-            'title' => ucwords(str_replace(['-', '_'], ' ', pathinfo($name, PATHINFO_FILENAME))),
-            'city' => 'Sikkim',
+            'title' => $meta['title'],
+            'city' => $meta['city'],
         ];
     }
 }

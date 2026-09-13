@@ -134,7 +134,7 @@ require __DIR__ . '/../includes/header.php';
         <!-- Transaction Details Block -->
         <div class="p-3 bg-light rounded-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div class="small">
-                <span class="text-muted">Payment Method:</span> <strong class="text-dark text-uppercase"><?= e($b['payment_method'] ?? 'card') ?></strong>
+                <span class="text-muted">Payment Method:</span> <strong class="text-dark text-uppercase"><?= e($b['payment_method'] ?? 'razorpay') ?></strong>
             </div>
             <?php if (!empty($b['transaction_id'])): ?>
             <div class="small">

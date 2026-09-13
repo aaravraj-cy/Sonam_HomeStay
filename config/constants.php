@@ -82,6 +82,9 @@ define('DB_SSL_CA_BASE64', env_value('DB_SSL_CA_BASE64', ''));
 define('DB_DEBUG', in_array(strtolower(env_value('DB_DEBUG', '0')), ['1', 'true', 'yes', 'on'], true));
 define('DB_AUTO_MIGRATE', in_array(strtolower(env_value('DB_AUTO_MIGRATE', '0')), ['1', 'true', 'yes', 'on'], true));
 
+define('RAZORPAY_KEY_ID', env_value('RAZORPAY_KEY_ID', 'rzp_test_TFfbjUQG491P06'));
+define('RAZORPAY_KEY_SECRET', env_value('RAZORPAY_KEY_SECRET', 'SDBgRbud5fbmpPhvw2MuNbGSDf'));
+
 function db_ssl_ca_path()
 {
     static $resolvedPath = null;
